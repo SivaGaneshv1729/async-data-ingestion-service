@@ -4,6 +4,16 @@ A robust, event-driven backend system for asynchronous data ingestion and proces
 
 ## Architecture
 
+```mermaid
+graph LR
+    A[Client] -->|POST /ingest| B(Producer API)
+    B -->|Publish| C{RabbitMQ}
+    C -->|Queue| D[Consumer Service]
+    D -->|Process & Store| E[(PostgreSQL)]
+    D -.->|Retry/Fail| F[Dead Letter Queue]
+    B -.->|GET /dead-letters| F
+```
+
 1.  **Producer API (Node.js/Express)**:
     *   Ingests JSON data via `POST /api/data/ingest`.
     *   Validates payload using `Joi`.
@@ -22,6 +32,9 @@ A robust, event-driven backend system for asynchronous data ingestion and proces
 
 4.  **Database (PostgreSQL)**:
     *   Stores persistent `processed_events`.
+
+## API Documentation
+For detailed API specifications, including request/response examples, please refer to [API_DOCS.md](API_DOCS.md).
 
 ## Prerequisites
 
