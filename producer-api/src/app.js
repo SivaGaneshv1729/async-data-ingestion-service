@@ -21,7 +21,8 @@ const startServer = async () => {
         });
     } catch (err) {
         console.error('Failed to start server:', err);
-        process.exit(1);
+        console.log('Retrying in 5 seconds...');
+        setTimeout(startServer, 5000);
     }
 };
 
