@@ -1,4 +1,4 @@
-# Async Data Ingestion Service
+# Asynchronous Data Ingestion and Processing Service with Message Queues
 
 A robust, event-driven backend system for asynchronous data ingestion and processing, built with **Node.js**, **Express**, **RabbitMQ**, and **PostgreSQL**.
 
