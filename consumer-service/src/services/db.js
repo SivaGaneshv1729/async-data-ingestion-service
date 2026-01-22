@@ -1,16 +1,15 @@
 import pg from 'pg';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import env from '../config.js';
+import logger from '../utils/logger.js';
 
 const { Pool } = pg;
 
 const pool = new Pool({
-    host: process.env.POSTGRES_HOST || 'db',
-    port: process.env.POSTGRES_PORT || 5432,
-    database: process.env.POSTGRES_DB || 'processed_data',
-    user: process.env.POSTGRES_USER || 'user',
-    password: process.env.POSTGRES_PASSWORD || 'password'
+    host: env.POSTGRES_HOST,
+    port: env.POSTGRES_PORT,
+    database: env.POSTGRES_DB,
+    user: env.POSTGRES_USER,
+    password: env.POSTGRES_PASSWORD
 });
 
 export const initDb = async () => {
@@ -26,10 +25,14 @@ export const initDb = async () => {
                 processed_data JSONB
             );
         `);
-        console.log("Database initialized");
+        logger.info("Database initialized");
     } finally {
         client.release();
     }
+};
+
+export const closeDb = async () => {
+    await pool.end();
 };
 
 export const checkMessageExists = async (messageId) => {
