@@ -1,14 +1,15 @@
 import { checkMessageExists, saveProcessedData } from './db.js';
+import logger from '../utils/logger.js';
 
 export const processMessage = async (message) => {
     const { message_id, timestamp, data } = message;
 
-    console.log(`Processing message: ${message_id}`);
+    logger.info({ message_id }, 'Processing message');
 
     // Idempotency
     const exists = await checkMessageExists(message_id);
     if (exists) {
-        console.warn(`Message ${message_id} already processed. Skipping.`);
+        logger.warn({ message_id }, 'Message already processed. Skipping.');
         return;
     }
 
@@ -33,5 +34,5 @@ export const processMessage = async (message) => {
         processedAt
     );
 
-    console.log(`Message ${message_id} processed successfully.`);
+    logger.info({ message_id }, 'Message processed successfully');
 };
