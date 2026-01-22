@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Async Data Ingestion Service
+  description: API for ingesting data asynchronously via RabbitMQ.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local server
+paths:
+  /api/data/ingest:
+    post:
+      summary: Ingest data
+      description: Push data to the processing queue.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - event_type
+              properties:
+                user_id:
+                  type: string
+                  example: "user_123"
+                event_type:
+                  type: string
+                  example: "click"
+                timestamp:
+                  type: string
+                  format: date-time
+                details:
+                  type: object
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "accepted"
+                  message_id:
+                    type: string
+  /api/dead-letters:
+    get:
+      summary: Get Dead Letters
+      description: Retrieve failed messages from the DLQ.
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Max number of messages to return
+      responses:
+        '200':
+          description: List of dead letters
+  /health:
+    get:
+      summary: Health Check
+      responses:
+        '200':
+          description: OK
